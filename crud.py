@@ -1,4 +1,3 @@
-"""CRUD operations."""
 
 from model import db, Business, City, Category, BusinessCategory, connect_to_db
 
@@ -13,11 +12,15 @@ def create_business(business_id,
                     rating, 
                     coordinates_latitude, 
                     coordinates_longitude, 
-                    display_address, 
-                    display_phone, 
-                    city_name):
+                    address_street, 
+                    address_city, 
+                    address_state, 
+                    address_zip, 
+                    display_phone):
     
-    city_id = get_city_by_name(city_name).city_id 
+    city = get_city_by_name(address_city)
+    if not city:
+        city = create_city(address_city)
 
     business = Business(
                     business_id=business_id, 
@@ -30,25 +33,57 @@ def create_business(business_id,
                     rating=rating, 
                     coordinates_latitude=coordinates_latitude, 
                     coordinates_longitude=coordinates_longitude, 
-                    display_address=display_address, 
+                    address_street=address_street,
+                    address_city=address_city, 
+                    address_state=address_state,
+                    address_zip=address_zip, 
                     display_phone=display_phone, 
-                    city_id=city_id) 
-    
-    db.session.add(business)
-    db.session.commit() 
+                    city_id=city.city_id) 
 
     return business
 
 
-def create_category():
+def create_category(alias, name):
+    category = Category(alias=alias, name=name) 
+
+    db.session.add(category)
+    db.session.commit() 
+
+    return category 
+
+
+def create_city(name):
+    city = City(name=name)
+
+    db.session.add(city)
+    db.session.commit() 
+
+    return city 
+
+
+def create_businesscategory(business_id, category_alias):
+    businesscategory = BusinessCategory(business_id=business_id, category_alias=category_alias)
+
+    db.session.add(businesscategory)
+    db.session.commit() 
     
+    return businesscategory
+
 
 def get_city_by_name(city_name):
-    """Return city by name"""
-
     return City.query.filter(City.name == city_name).first() 
 
 
+def get_category_by_alias(alias):
+    return Category.query.filter(Category.alias == alias).first()
+
+
+def get_businesscategory(b_id, c_alias):
+    return BusinessCategory.query.filter((BusinessCategory.business_id == b_id) & (BusinessCategory.category_alias == c_alias)).first()
+
+
+def get_all_businesses():
+    return Business.query.all() 
 
 
 
