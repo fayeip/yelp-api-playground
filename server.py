@@ -16,6 +16,15 @@ def get_businesses():
     businesses = crud.get_all_businesses() 
     return jsonify({biz.business_id: biz.to_dict() for biz in businesses})
 
+@app.route('/api/categories') 
+def get_categories():
+    categories = crud.get_all_categories()
+    print(categories)
+    return jsonify({category.alias: category.to_dict() for category in categories}) 
+
+# @app.route('/api/business/<category>') 
+# def get_businesses_by_category(category): 
+
 
 
 

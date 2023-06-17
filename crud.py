@@ -42,7 +42,6 @@ def create_business(business_id,
 
     return business
 
-
 def create_category(alias, name):
     category = Category(alias=alias, name=name) 
 
@@ -50,7 +49,6 @@ def create_category(alias, name):
     db.session.commit() 
 
     return category 
-
 
 def create_city(name):
     city = City(name=name)
@@ -60,7 +58,6 @@ def create_city(name):
 
     return city 
 
-
 def create_businesscategory(business_id, category_alias):
     businesscategory = BusinessCategory(business_id=business_id, category_alias=category_alias)
 
@@ -69,21 +66,20 @@ def create_businesscategory(business_id, category_alias):
     
     return businesscategory
 
-
 def get_city_by_name(city_name):
     return City.query.filter(City.name == city_name).first() 
-
 
 def get_category_by_alias(alias):
     return Category.query.filter(Category.alias == alias).first()
 
-
 def get_businesscategory(b_id, c_alias):
     return BusinessCategory.query.filter((BusinessCategory.business_id == b_id) & (BusinessCategory.category_alias == c_alias)).first()
 
-
 def get_all_businesses():
     return Business.query.all() 
+
+def get_all_categories():
+    return Category.query.all() 
 
 
 

@@ -22,6 +22,12 @@ function BizCard(props) {
 
 }
 
+function CategoryButton(props) { 
+    return (
+        <button type="button" className="btn btn-outline-secondary btn-sm m-1">{props.categoryName}</button>
+    );
+}
+
 function AllBusinessesPage(props) { 
     const allBusinesses = props.businesses; 
     console.log("inside AllBusinessesPage"); 
@@ -58,8 +64,26 @@ function AllBusinessesPage(props) {
 }
 
 
+function Sidebar(props) {
+    const activeCategories = props.activeCategories; 
+    console.log("inside Sidebar"); 
+    const catButtons = []; 
+
+    for (const cat of Object.values(activeCategories)) {
+        console.log(cat); 
+        const catBtn = (<CategoryButton categoryName={cat.name} />);
+        catButtons.push(catBtn); 
+    } 
+
+    return (
+        <div> {catButtons} </div>
+    );
+}
+
+
 function App() {
   const [businesses, setBusinesses] = React.useState({});
+  const [activeCategories, setActiveCategories] = React.useState({}); 
 
   React.useEffect(() => {
     fetch('/api/businesses')
@@ -71,9 +95,25 @@ function App() {
 
   console.log(businesses);
 
+  React.useEffect(() => {
+    fetch('/api/categories')
+    .then((response) => response.json())
+    .then((activeCategories) => {
+      setActiveCategories(activeCategories);
+    });
+    }, []);
+
+console.log(activeCategories); 
+
+
   return (
-    <div>
+    <div className="row">
+        <div className="col-2" id="sidebar">
+        <Sidebar activeCategories={activeCategories} />
+        </div>
+        <div className="col-10" id="main">
         <AllBusinessesPage businesses={businesses} /> 
+        </div>
     </div>
   );
 }
